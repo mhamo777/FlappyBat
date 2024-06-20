@@ -46,7 +46,7 @@ class DoMenu
         bool pressedEnter = false;
         string arrow = "\U0001F8A1";
 
-        string t = "Create a User;Start Game;Shop;End Game";
+        string t = "Create a User; Start Game; Shop; End Game";
         string[] parts = t.Split(';');
 
         while (!pressedEnter)
