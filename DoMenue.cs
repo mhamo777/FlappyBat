@@ -1,4 +1,5 @@
 ﻿using CreateUsers;
+using DoWalls;
 using System.Text;
 
 namespace Menue;
@@ -98,7 +99,7 @@ class DoMenue
                 Options();
                 break;
             case 1:
-                //DoWalls.Wall();
+                FlappyBatWalls.Wall();
                 break;
             case 2:
                 break;
