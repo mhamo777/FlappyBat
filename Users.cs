@@ -23,9 +23,9 @@ class Users
         User user = new();
         string n = string.Empty;
 
-        if (!File.Exists("usernames.csv"))
+        if (!File.Exists(@"Assets\usernames.csv"))
         {
-            StartMusic("C:\\2VersucheC#\\Abschiessen\\bin\\Debug\\net7.0\\typing.mp3");
+            StartMusic(@"Assets\typing.mp3");
             string text = "Sie haben noch keinen Account, erstellen Sie einen um fortzufahren. . .\n";
             foreach (char c in text)
             {
@@ -35,12 +35,12 @@ class Users
 
             n = Regist(user, n);
             n += "\n";
-            File.WriteAllText("usernames.csv", n);
+            File.WriteAllText(@"Assets\usernames.csv", n);
             EndMusic();
         }
         else
         {
-            StartMusic("C:\\2VersucheC#\\Abschiessen\\bin\\Debug\\net7.0\\typing.mp3");
+            StartMusic(@"Assets\typing.mp3");
             string text = "Wollen Sie einen neuen Account erstellen? ";
             foreach (char c in text)
             {
@@ -54,7 +54,7 @@ class Users
             {
                 n = Regist(user, n);
                 n += "\n";
-                File.AppendAllText("usernames.csv", n);
+                File.AppendAllText(@"Assets\usernames.csv", n);
             }
         }
 
@@ -62,12 +62,15 @@ class Users
         User[] users = new User[100];
         users = ReadFile(users, ref input);
 
-        string[] lines = new string[File.ReadAllLines("usernames.csv").Length];
+        string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
         }
-        File.WriteAllLines("usernames.csv", lines);
+
+        //DoMenue.Name = 
+
+        File.WriteAllLines(@"Assets\usernames.csv", lines);
 
         Console.Clear();
 
@@ -126,7 +129,7 @@ class Users
     }
     static User[] ReadFile(User[] u, ref int keep)
     {
-        string[] lines = File.ReadAllLines("usernames.csv");
+        string[] lines = File.ReadAllLines(@"Assets\usernames.csv");
         bool check = false;
 
 
@@ -161,13 +164,13 @@ class Users
             }
             Console.BackgroundColor = ConsoleColor.Black;
 
-            StartMusic("C:\\2VersucheC#\\Abschiessen\\bin\\Debug\\net7.0\\click.mp3");
+            StartMusic(@"Assets\click.mp3");
             Keys(ref check);
             EndMusic();
 
             if (check)
             {
-                StartMusic("C:\\2VersucheC#\\Abschiessen\\bin\\Debug\\net7.0\\typing.mp3");
+                StartMusic(@"Assets\typing.mp3");
                 PasswordIsValid(u, ref keep);
                 EndMusic();
             }

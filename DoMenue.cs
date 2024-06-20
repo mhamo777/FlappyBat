@@ -6,6 +6,8 @@ namespace Menue;
 
 class DoMenue
 {
+    public string Name;
+    public int age;
     static int UpAndDown = 0;
     public static void Main()
     {
