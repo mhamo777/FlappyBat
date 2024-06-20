@@ -6,6 +6,7 @@ namespace CreateUsers;
 
 class Users
 {
+    static User[] users = new User[100];
     static IWavePlayer? waveOutDevice;
     static AudioFileReader? audioFileReader;
     static int y = 0;
@@ -61,10 +62,10 @@ class Users
         }
 
         int input = 0;
-        User[] users = new User[100];
+        
         users = ReadFile(users, ref input);
 
-        WriteAllInLines(users, input);
+        WriteAllInLines(input);
 
         Console.Clear();
 
@@ -75,13 +76,13 @@ class Users
         Console.Clear();
 
     }
-    public static void WriteAllInLines(User[] u, int inp)
+    public static void WriteAllInLines(int inp)
     {
-        u[inp].Points = DoMenu.Points;
+        users[inp].Points = DoMenu.Points;
         string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
         for (int i = 0; i < lines.Length; i++)
         {
-            lines[i] = u[i].UserName + ";" + u[i].Password + ";" + u[i].Points;
+            lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
         }
 
         File.WriteAllLines(@"Assets\usernames.csv", lines);

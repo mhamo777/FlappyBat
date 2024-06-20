@@ -100,8 +100,10 @@ class DoMenu
                 Options();
                 break;
             case 1:
-                FlappyBatWalls.Wall(); 
+                FlappyBatWalls.Wall();
                 //points nach einem erfolgreichen jump um 1 erhöhen
+
+                Users.WriteAllInLines(Points);
                 break;
             case 2:
                 break;
