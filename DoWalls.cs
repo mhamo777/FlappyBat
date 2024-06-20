@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Diagnostics.Metrics;
+using System.Text;
 using System.Threading;
 
 namespace DoWalls;
 
 class FlappyBatWalls
 {
+    static int batPosition = 10; //einstellen, in welcher zeile der Vogel starten soll
+    static int gravity = 1;
+    static int jump = -4; //Einstellen, wie viele Zeilen man springen möchte
+    static bool gameRunning = true;
+    static int previousBirdPosition;
     static Random random = new();
 
     public static void Wall()
@@ -19,7 +26,10 @@ class FlappyBatWalls
 
         int spawnInterval = 40;         // Zeitdifferenz in ms zwischen Wände
         int repetation = 0;             // Wiederholung
-        int currentWallIndex = 0;       
+        int currentWallIndex = 0;
+
+        Thread thread1 = new(Jump);
+        thread1.Start();
 
         while (true)
         {
@@ -45,6 +55,25 @@ class FlappyBatWalls
 
             repetation++;
         }
+    }
+    static void Jump()
+    {
+        //Console.Clear();
+        Console.CursorVisible = false;
+        // Console.SetWindowSize(150, windowHeight);
+        //Console.SetBufferSize(150, windowHeight);
+
+        Thread inputThread = new Thread(HandleInput);
+        inputThread.Start();
+
+        while (gameRunning)
+        {
+            DrawBird();
+            UpdateBirdPosition();
+            Thread.Sleep(65);//wie lange er in der selben stelle bleiben soll
+        }
+        //Console.WriteLine("Game Over!");
+        //Console.SetCursorPosition(0, windowHeight / 2);
     }
 
     /// <summary>
@@ -108,6 +137,43 @@ class FlappyBatWalls
                     Console.Write(" ");
                 }
             }
+        }
+    }
+
+    static void HandleInput()
+    {
+        while (gameRunning)
+        {
+            //springen
+            if (Console.ReadKey(true).Key == ConsoleKey.Spacebar)
+            {
+                batPosition += jump;
+            }
+        }
+    }
+
+    static void DrawBird()
+    {
+        // löschen von alte stelle
+        Console.SetCursorPosition(0, previousBirdPosition);
+        Console.Write(new string(' ', 30));
+
+
+        // an neue position zeichnen
+        Console.SetCursorPosition(0, batPosition);
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.Write("                          \U0001F987");
+    }
+
+    static void UpdateBirdPosition()
+    {
+        previousBirdPosition = batPosition;
+        batPosition += gravity;
+
+        // schauen, ob der vogel den Boden berührt hat
+        if (batPosition >= 30)
+        {
+            gameRunning = false;
         }
     }
 }
