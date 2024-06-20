@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Menue;
 
-class DoMenue
+class DoMenu
 {
     public string Name;
     public int age;

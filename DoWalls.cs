@@ -19,7 +19,7 @@ class FlappyBatWalls
 
         int spawnInterval = 40;         // Zeitdifferenz in ms zwischen Wände
         int repetation = 0;             // Wiederholung
-        int currentWallIndex = 0;       // 
+        int currentWallIndex = 0;       
 
         while (true)
         {

@@ -1,5 +1,6 @@
 ﻿using Menue;
 using NAudio.Wave;
+using System.Text;
 
 namespace CreateUsers;
 
@@ -16,6 +17,7 @@ class Users
     }
     public static void TheUsers()
     {
+        Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
         //File.Delete("usernames.csv");
