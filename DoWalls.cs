@@ -54,7 +54,9 @@ class FlappyBatWalls
     /// <param name="holePositions"></param>
     static void DrawWalls(int[] wallPositions, int[] holePositions)
     {
-        string  wallSymbol = "\u2588";
+        string wallSymbol = "\u2588";
+        string upperWallSymbol = "\u259c";
+        string underWallSymbol = "\u259f";
 
         int wallLength = Console.WindowHeight;
 
@@ -67,7 +69,17 @@ class FlappyBatWalls
             {
                 for (int xPosition = 0; xPosition < wallLength; xPosition++)
                 {
-                    if (xPosition < holePosition || xPosition >= holePosition + 10)
+                    if(xPosition == holePosition - 1)
+                    {
+                        Console.SetCursorPosition(yPosition, xPosition);
+                        Console.Write(upperWallSymbol);
+                    }
+                    else if (xPosition == holePosition + 9)
+                    {
+                        Console.SetCursorPosition(yPosition, xPosition);
+                        Console.Write(underWallSymbol);
+                    }
+                    else if (xPosition < holePosition || xPosition >= holePosition + 10)
                     {
                         Console.SetCursorPosition(yPosition, xPosition);
                         Console.Write(wallSymbol);
