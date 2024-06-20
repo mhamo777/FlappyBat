@@ -12,9 +12,9 @@ class DoMenue
         Title();
 
         string text = """
-                      Welcome to our Game, FlappyBat.\n
-                      The game was programmed by Metehan, David and Hamlet.\n
-                      It's a simple game, it's similar to FlappyBird, only with a bat\n
+                      Welcome to our Game, FlappyBat.
+                      The game was programmed by Metehan, David and Hamlet.
+                      It's a simple game, it's similar to FlappyBird, only with a bat
                       We hope you enjoy our game . . .
                       """;
 
