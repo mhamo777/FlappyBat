@@ -64,15 +64,7 @@ class Users
         User[] users = new User[100];
         users = ReadFile(users, ref input);
 
-        string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
-        for (int i = 0; i < lines.Length; i++)
-        {
-            lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
-        }
-
-        //DoMenue.Name = 
-
-        File.WriteAllLines(@"Assets\usernames.csv", lines);
+        WriteAllInLines(users);
 
         Console.Clear();
 
@@ -82,6 +74,16 @@ class Users
 
         Console.Clear();
 
+    }
+    static void WriteAllInLines(User[] u)
+    {
+        string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i] = u[i].UserName + ";" + u[i].Password + ";" + u[i].Points;
+        }
+
+        File.WriteAllLines(@"Assets\usernames.csv", lines);
     }
     static User[] Sort(User[] a)
     {
