@@ -14,13 +14,12 @@ class FlappyBatWalls
         const int maxWalls = 5;
         int[] wallPositions = new int[maxWalls];
         int[] holePositions = new int[maxWalls];
-        //abc
 
         Thread.Sleep(2000);
 
         int spawnInterval = 40;         // Zeitdifferenz in ms zwischen Wände
         int repetation = 0;             // Wiederholung
-        int currentWallIndex = 0;       // 
+        int currentWallIndex = 0;       
 
         while (true)
         {
