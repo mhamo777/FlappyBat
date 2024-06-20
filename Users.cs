@@ -64,7 +64,7 @@ class Users
         User[] users = new User[100];
         users = ReadFile(users, ref input);
 
-        WriteAllInLines(users);
+        WriteAllInLines(users, input);
 
         Console.Clear();
 
@@ -75,8 +75,9 @@ class Users
         Console.Clear();
 
     }
-    static void WriteAllInLines(User[] u)
+    public static void WriteAllInLines(User[] u, int inp)
     {
+        u[inp].Points = DoMenu.Points;
         string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
         for (int i = 0; i < lines.Length; i++)
         {

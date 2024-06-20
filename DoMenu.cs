@@ -6,7 +6,7 @@ namespace Menue;
 
 class DoMenu
 {
-    public int Points = 0;
+    public static int Points = 0;
     static int UpAndDown = 0;
     public static void Main()
     {
@@ -101,6 +101,7 @@ class DoMenu
                 break;
             case 1:
                 FlappyBatWalls.Wall(); 
+                //points nach einem erfolgreichen jump um 1 erhöhen
                 break;
             case 2:
                 break;
