@@ -99,7 +99,7 @@ class DoMenue
                 Options();
                 break;
             case 1:
-                FlappyBatWalls.Wall();
+                FlappyBatWalls.Wall(); // Wände
                 break;
             case 2:
                 break;
