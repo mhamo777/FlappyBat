@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Menue;
 
-class DoMenue
+class DoMenu
 {
     static int UpAndDown = 0;
     public static void Main()
