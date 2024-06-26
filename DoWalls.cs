@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using CreateUsers;
 using Menue;
 
 namespace DoWalls
@@ -14,7 +15,7 @@ namespace DoWalls
         static int previousBirdPosition;
         static Random random = new();
         static object lockObject = new();
-        static int score = 0;
+        public static int score = 0;
 
         public static void Wall()
         {
@@ -61,12 +62,12 @@ namespace DoWalls
             }
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
             Console.WriteLine("Game Over!");
+            Users.WriteAllInLines(Users.input);
             Thread.Sleep(2000);
-            DoMenu.Points = score;
-            score = 0;
             Console.Clear();
             DoMenu.Title();
             DoMenu.Options();
+            
         }
 
         static void Jump()
@@ -150,11 +151,11 @@ namespace DoWalls
                     lock (lockObject)
                     {
                         batPosition += jump;
+                        score++; // Increase score on jump
                         if (batPosition < 0)
                         {
                             batPosition = 0;
                         }
-                        score++;
                     }
                 }
             }
@@ -196,7 +197,7 @@ namespace DoWalls
 
         public static void WallMain()
         {
-            Wall();
+            Wall(); // Removed the Console.SetWindowSize and Console.SetBufferSize calls
         }
     }
 }

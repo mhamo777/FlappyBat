@@ -49,7 +49,7 @@ namespace Menue
             bool pressedEnter = false;
             string arrow = "\U0001F8A1";
 
-            string t = "Create a User;Start Game;Shop;End Game";
+            string t = "User;Start Game;End Game";
             string[] parts = t.Split(';');
 
             while (!pressedEnter)
@@ -110,9 +110,6 @@ namespace Menue
                     Users.WriteAllInLines(Points);
                     break;
                 case 2:
-                    // Shop functionality here
-                    break;
-                case 3:
                     Environment.Exit(0);
                     break;
                 default:

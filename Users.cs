@@ -1,4 +1,5 @@
-﻿using Menue;
+﻿using DoWalls;
+using Menue;
 using NAudio.Wave;
 using System.Text;
 
@@ -9,7 +10,8 @@ class Users
     static User[] users = new User[100];
     static IWavePlayer? waveOutDevice;
     static AudioFileReader? audioFileReader;
-    static int y = 0;
+    public static int y = 0;
+    public static int input = 0;
     public struct User
     {
         public string UserName;
@@ -21,12 +23,10 @@ class Users
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
 
-        //File.Delete("usernames.csv");
-
         User user = new();
         string n = string.Empty;
 
-        if (!File.Exists(@"Assets\usernames.csv"))
+        if (!File.Exists(@"Assets\usernam.csv"))
         {
             StartMusic(@"Assets\typing.mp3");
             string text = "Sie haben noch keinen Account, erstellen Sie einen um fortzufahren. . .\n";
@@ -38,7 +38,7 @@ class Users
 
             n = Regist(user, n);
             n += "\n";
-            File.WriteAllText(@"Assets\usernames.csv", n);
+            File.WriteAllText(@"Assets\usernam.csv", n);
             EndMusic();
         }
         else
@@ -57,12 +57,12 @@ class Users
             {
                 n = Regist(user, n);
                 n += "\n";
-                File.AppendAllText(@"Assets\usernames.csv", n);
+                File.AppendAllText(@"Assets\usernam.csv", n);
             }
         }
 
-        int input = 0;
-        
+        input = 0;
+
         users = ReadFile(users, ref input);
 
         WriteAllInLines(input);
@@ -74,19 +74,24 @@ class Users
         Thread.Sleep(2000);
 
         Console.Clear();
-
     }
+
     public static void WriteAllInLines(int inp)
     {
-        users[inp].Points = DoMenu.Points;
-        string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
-        for (int i = 0; i < lines.Length; i++)
+        users[inp].Points += FlappyBatWalls.score;
+        string[] lines = new string[users.Length];
+        for (int i = 0; i < users.Length; i++)
         {
-            lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
+            if (!string.IsNullOrEmpty(users[i].UserName))
+            {
+                lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
+            }
         }
-
-        File.WriteAllLines(@"Assets\usernames.csv", lines);
+        File.WriteAllLines(@"Assets\usernam.csv", lines);
     }
+
+
+
     static User[] Sort(User[] a)
     {
         for (int i = 0; i < a.Length; i++)
@@ -101,9 +106,9 @@ class Users
                 }
             }
         }
-
         return a;
     }
+
     static string Regist(User u, string t)
     {
         Console.Write("Username: ");
@@ -117,7 +122,6 @@ class Users
         int count = 0;
         while (count != 3)
         {
-
             Console.Clear();
             Console.Write("Account erfolgreich erstellt ");
             string text = ". . .";
@@ -130,14 +134,13 @@ class Users
 
             count++;
         }
-
         return t;
     }
+
     static User[] ReadFile(User[] u, ref int keep)
     {
-        string[] lines = File.ReadAllLines(@"Assets\usernames.csv");
+        string[] lines = File.ReadAllLines(@"Assets\usernam.csv");
         bool check = false;
-
 
         while (!check)
         {
@@ -180,10 +183,10 @@ class Users
                 PasswordIsValid(u, ref keep);
                 EndMusic();
             }
-
         }
         return u;
     }
+
     static void PasswordIsValid(User[] u, ref int taken)
     {
         Console.Clear();
@@ -203,22 +206,21 @@ class Users
             ReadFile(u, ref taken);
         }
     }
+
     static void Print(string a, string b, int p)
     {
         b = "********";
         Console.WriteLine($"{a,12}{b,12}{p,11}");
     }
+
     static void Design(int index, User[] u)
     {
         Console.Clear();
-
         Console.WriteLine($" User: {u[index].UserName}");
-
-        //GameStart.Start();
     }
+
     public static void Keys(ref bool ch)
     {
-
         ConsoleKeyInfo key = Console.ReadKey();
 
         if (key.Key == ConsoleKey.DownArrow)
@@ -234,6 +236,7 @@ class Users
             ch = true;
         }
     }
+
     public static void StartMusic(string fileName)
     {
         waveOutDevice = new WaveOutEvent();
@@ -241,6 +244,7 @@ class Users
         waveOutDevice.Init(audioFileReader);
         waveOutDevice.Play();
     }
+
     public static void EndMusic()
     {
         waveOutDevice?.Stop();
