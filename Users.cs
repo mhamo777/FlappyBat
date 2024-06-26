@@ -1,5 +1,4 @@
-﻿using DoWalls;
-using Menue;
+﻿using Menue;
 using NAudio.Wave;
 using System.Text;
 
@@ -10,8 +9,7 @@ class Users
     static User[] users = new User[100];
     static IWavePlayer? waveOutDevice;
     static AudioFileReader? audioFileReader;
-    public static int y = 0;
-    public static int input = 0;
+    static int y = 0;
     public struct User
     {
         public string UserName;
@@ -26,7 +24,7 @@ class Users
         User user = new();
         string n = string.Empty;
 
-        if (!File.Exists(@"Assets\usernam.csv"))
+        if (!File.Exists(@"Assets\usernames.csv"))
         {
             StartMusic(@"Assets\typing.mp3");
             string text = "Sie haben noch keinen Account, erstellen Sie einen um fortzufahren. . .\n";
@@ -38,7 +36,7 @@ class Users
 
             n = Regist(user, n);
             n += "\n";
-            File.WriteAllText(@"Assets\usernam.csv", n);
+            File.WriteAllText(@"Assets\usernames.csv", n);
             EndMusic();
         }
         else
@@ -57,11 +55,11 @@ class Users
             {
                 n = Regist(user, n);
                 n += "\n";
-                File.AppendAllText(@"Assets\usernam.csv", n);
+                File.AppendAllText(@"Assets\usernames.csv", n);
             }
         }
 
-        input = 0;
+        int input = 0;
 
         users = ReadFile(users, ref input);
 
@@ -75,22 +73,19 @@ class Users
 
         Console.Clear();
     }
-
     public static void WriteAllInLines(int inp)
     {
-        users[inp].Points += FlappyBatWalls.score;
-        string[] lines = new string[users.Length];
-        for (int i = 0; i < users.Length; i++)
+        users[inp].Points += DoMenu.Points;  // Update points with the game's points
+        DoMenu.Points = 0; // Reset the points after updating
+
+        string[] lines = new string[File.ReadAllLines(@"Assets\usernames.csv").Length];
+        for (int i = 0; i < lines.Length; i++)
         {
-            if (!string.IsNullOrEmpty(users[i].UserName))
-            {
-                lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
-            }
+            lines[i] = users[i].UserName + ";" + users[i].Password + ";" + users[i].Points;
         }
-        File.WriteAllLines(@"Assets\usernam.csv", lines);
+
+        File.WriteAllLines(@"Assets\usernames.csv", lines);
     }
-
-
 
     static User[] Sort(User[] a)
     {
@@ -106,6 +101,7 @@ class Users
                 }
             }
         }
+
         return a;
     }
 
@@ -134,12 +130,13 @@ class Users
 
             count++;
         }
+
         return t;
     }
 
     static User[] ReadFile(User[] u, ref int keep)
     {
-        string[] lines = File.ReadAllLines(@"Assets\usernam.csv");
+        string[] lines = File.ReadAllLines(@"Assets\usernames.csv");
         bool check = false;
 
         while (!check)

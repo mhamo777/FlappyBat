@@ -15,7 +15,7 @@ namespace DoWalls
         static int previousBirdPosition;
         static Random random = new();
         static object lockObject = new();
-        public static int score = 0;
+        static int score = 0;
 
         public static void Wall()
         {
@@ -62,12 +62,10 @@ namespace DoWalls
             }
             Console.SetCursorPosition(0, Console.WindowHeight / 2);
             Console.WriteLine("Game Over!");
-            Users.WriteAllInLines(Users.input);
             Thread.Sleep(2000);
-            Console.Clear();
+            score = 0;
             DoMenu.Title();
             DoMenu.Options();
-            
         }
 
         static void Jump()
