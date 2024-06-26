@@ -1,179 +1,202 @@
 ﻿using System;
-using System.Diagnostics.Metrics;
 using System.Text;
 using System.Threading;
+using Menue;
 
-namespace DoWalls;
-
-class FlappyBatWalls
+namespace DoWalls
 {
-    static int batPosition = 10; //einstellen, in welcher zeile der Vogel starten soll
-    static int gravity = 1;
-    static int jump = -4; //Einstellen, wie viele Zeilen man springen möchte
-    static bool gameRunning = true;
-    static int previousBirdPosition;
-    static Random random = new();
-
-    public static void Wall()
+    class FlappyBatWalls
     {
-        Console.CursorVisible = false;
+        static int batPosition = 10;
+        static int gravity = 1;
+        static int jump = -4;
+        static bool gameRunning = true;
+        static int previousBirdPosition;
+        static Random random = new();
+        static object lockObject = new();
+        static int score = 0;
 
-        const int maxWalls = 5;
-        int[] wallPositions = new int[maxWalls];
-        int[] holePositions = new int[maxWalls];
-
-        Thread.Sleep(2000);
-
-        int spawnInterval = 40;         // Zeitdifferenz in ms zwischen Wände
-        int repetation = 0;             // Wiederholung
-        int currentWallIndex = 0;
-
-        Thread thread1 = new(Jump);
-        thread1.Start();
-
-        while (true)
+        public static void Wall()
         {
-            if (repetation % spawnInterval == 0)
-            {
-                wallPositions[currentWallIndex] = Console.WindowWidth - 1;
-                holePositions[currentWallIndex] = random.Next(0, Console.WindowHeight - 5);
-                currentWallIndex = (currentWallIndex + 1) % maxWalls;
-            }
+            Console.CursorVisible = false;
+            Console.OutputEncoding = Encoding.UTF8;
 
-            DrawWalls(wallPositions, holePositions);
-            Thread.Sleep(50);
-            ClearWalls(wallPositions);
+            const int maxWalls = 5;
+            int[] wallPositions = new int[maxWalls];
+            int[] holePositions = new int[maxWalls];
 
-            // Neue Positionen erzeugen
-            for (int i = 0; i < maxWalls; i++)
+            int spawnInterval = 40;
+            int repetation = 0;
+            int currentWallIndex = 0;
+
+            Thread thread1 = new(Jump);
+            thread1.Start();
+
+            while (gameRunning)
             {
-                if (wallPositions[i] >= 0)
+                lock (lockObject)
                 {
-                    wallPositions[i]--;
+                    if (repetation % spawnInterval == 0)
+                    {
+                        wallPositions[currentWallIndex] = Console.WindowWidth - 1;
+                        holePositions[currentWallIndex] = random.Next(0, Console.WindowHeight - 10);
+                        currentWallIndex = (currentWallIndex + 1) % maxWalls;
+                    }
+
+                    DrawWalls(wallPositions, holePositions);
+                    Thread.Sleep(50);
+                    ClearWalls(wallPositions);
+
+                    for (int i = 0; i < maxWalls; i++)
+                    {
+                        if (wallPositions[i] >= 0)
+                        {
+                            wallPositions[i]--;
+                        }
+                    }
+
+                    repetation++;
+                    CheckCollision(wallPositions, holePositions);
                 }
             }
-
-            repetation++;
+            Console.SetCursorPosition(0, Console.WindowHeight / 2);
+            Console.WriteLine("Game Over!");
+            Thread.Sleep(2000);
+            DoMenu.Points = score;
+            score = 0;
+            Console.Clear();
+            DoMenu.Title();
+            DoMenu.Options();
         }
-    }
-    static void Jump()
-    {
-        //Console.Clear();
-        Console.CursorVisible = false;
-        // Console.SetWindowSize(150, windowHeight);
-        //Console.SetBufferSize(150, windowHeight);
 
-        Thread inputThread = new Thread(HandleInput);
-        inputThread.Start();
-
-        while (gameRunning)
+        static void Jump()
         {
-            DrawBird();
-            UpdateBirdPosition();
-            Thread.Sleep(65);//wie lange er in der selben stelle bleiben soll
-        }
-        //Console.WriteLine("Game Over!");
-        //Console.SetCursorPosition(0, windowHeight / 2);
-    }
+            Console.CursorVisible = false;
 
-    /// <summary>
-    /// Draws a wall with Unicode and avoids the saved hole positions so the bat can pass
-    /// </summary>
-    /// <param name="wallPositions"></param>
-    /// <param name="holePositions"></param>
-    static void DrawWalls(int[] wallPositions, int[] holePositions)
-    {
-        string wallSymbol = "\u2588";
-        string upperWallSymbol = "\u259c";
-        string underWallSymbol = "\u259f";
+            Thread inputThread = new Thread(HandleInput);
+            inputThread.Start();
 
-        int wallLength = Console.WindowHeight;
-
-        for (int i = 0; i < wallPositions.Length; i++)
-        {
-            int yPosition = wallPositions[i];
-            int holePosition = holePositions[i];
-
-            if (yPosition >= 0)
+            while (gameRunning)
             {
-                for (int xPosition = 0; xPosition < wallLength; xPosition++)
+                lock (lockObject)
                 {
-                    if(xPosition == holePosition - 1)
-                    {
-                        Console.SetCursorPosition(yPosition, xPosition);
-                        Console.Write(upperWallSymbol);
-                    }
-                    else if (xPosition == holePosition + 9)
-                    {
-                        Console.SetCursorPosition(yPosition, xPosition);
-                        Console.Write(underWallSymbol);
-                    }
-                    else if (xPosition < holePosition || xPosition >= holePosition + 10)
-                    {
-                        Console.SetCursorPosition(yPosition, xPosition);
-                        Console.Write(wallSymbol);
-                    }
+                    DrawBird();
+                    UpdateBirdPosition();
                 }
+                Thread.Sleep(65);
             }
         }
-    }
 
-    /// <summary>
-    /// Clears the walls on the Console
-    /// </summary>
-    /// <param name="wallPositions"></param>
-    static void ClearWalls(int[] wallPositions)
-    {
-        int wallLength = Console.WindowHeight;
-
-        // Führe das aus für jede y-Position im array wallPositions
-        foreach (int yPosition in wallPositions)
+        static void DrawWalls(int[] wallPositions, int[] holePositions)
         {
-            if (yPosition >= 0)
+            string wallSymbol = "\u2588";
+            string upperWallSymbol = "\u259c";
+            string underWallSymbol = "\u259f";
+
+            int wallLength = Console.WindowHeight;
+
+            for (int i = 0; i < wallPositions.Length; i++)
             {
-                for (int xPosition = 0; xPosition < wallLength; xPosition++)
+                int yPosition = wallPositions[i];
+                int holePosition = holePositions[i];
+
+                if (yPosition >= 0)
                 {
-                    Console.SetCursorPosition(yPosition, xPosition);
-                    Console.Write(" ");
+                    for (int xPosition = 0; xPosition < wallLength; xPosition++)
+                    {
+                        if (xPosition == holePosition - 1)
+                        {
+                            Console.SetCursorPosition(yPosition, xPosition);
+                            Console.Write(upperWallSymbol);
+                        }
+                        else if (xPosition == holePosition + 9)
+                        {
+                            Console.SetCursorPosition(yPosition, xPosition);
+                            Console.Write(underWallSymbol);
+                        }
+                        else if (xPosition < holePosition || xPosition >= holePosition + 10)
+                        {
+                            Console.SetCursorPosition(yPosition, xPosition);
+                            Console.Write(wallSymbol);
+                        }
+                    }
                 }
             }
         }
-    }
 
-    static void HandleInput()
-    {
-        while (gameRunning)
+        static void ClearWalls(int[] wallPositions)
         {
-            //springen
-            if (Console.ReadKey(true).Key == ConsoleKey.Spacebar)
+            int wallLength = Console.WindowHeight;
+
+            foreach (int yPosition in wallPositions)
             {
-                batPosition += jump;
+                if (yPosition >= 0)
+                {
+                    for (int xPosition = 0; xPosition < wallLength; xPosition++)
+                    {
+                        Console.SetCursorPosition(yPosition, xPosition);
+                        Console.Write(" ");
+                    }
+                }
             }
         }
-    }
 
-    static void DrawBird()
-    {
-        // löschen von alte stelle
-        Console.SetCursorPosition(0, previousBirdPosition);
-        Console.Write(new string(' ', 30));
-
-
-        // an neue position zeichnen
-        Console.SetCursorPosition(0, batPosition);
-        Console.OutputEncoding = Encoding.UTF8;
-        Console.Write("                          \U0001F987");
-    }
-
-    static void UpdateBirdPosition()
-    {
-        previousBirdPosition = batPosition;
-        batPosition += gravity;
-
-        // schauen, ob der vogel den Boden berührt hat
-        if (batPosition >= 30)
+        static void HandleInput()
         {
-            gameRunning = false;
+            while (gameRunning)
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.Spacebar)
+                {
+                    lock (lockObject)
+                    {
+                        batPosition += jump;
+                        if (batPosition < 0)
+                        {
+                            batPosition = 0;
+                        }
+                        score++;
+                    }
+                }
+            }
+        }
+
+        static void DrawBird()
+        {
+            Console.SetCursorPosition(0, previousBirdPosition);
+            Console.Write(" ".PadRight(30));
+
+            Console.SetCursorPosition(0, batPosition);
+            Console.Write("                          \U0001F987");
+        }
+
+        static void UpdateBirdPosition()
+        {
+            previousBirdPosition = batPosition;
+            batPosition += gravity;
+
+            if (batPosition >= Console.WindowHeight || batPosition < 0)
+            {
+                gameRunning = false;
+            }
+        }
+
+        static void CheckCollision(int[] wallPositions, int[] holePositions)
+        {
+            for (int i = 0; i < wallPositions.Length; i++)
+            {
+                if (wallPositions[i] == 0)
+                {
+                    if (batPosition < holePositions[i] || batPosition > holePositions[i] + 9)
+                    {
+                        gameRunning = false;
+                    }
+                }
+            }
+        }
+
+        public static void WallMain()
+        {
+            Wall();
         }
     }
 }

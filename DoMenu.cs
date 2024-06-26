@@ -2,117 +2,124 @@
 using DoWalls;
 using System.Text;
 
-namespace Menue;
-
-class DoMenu
+namespace Menue
 {
-    public static int Points = 0;
-    static int UpAndDown = 0;
-    public static void Main()
+    class DoMenu
     {
-        Console.CursorVisible = false;
-        Title();
+        public static int Points = 0;
+        static int UpAndDown = 0;
 
-        string text = """
-                      Welcome to our Game, FlappyBat.
-                      The game was programmed by Metehan, David and Hamlet.
-                      It's a simple game, it's similar to FlappyBird, only with a bat
-                      We hope you enjoy our game . . .
-                      """;
-
-        foreach (char c in text)
+        public static void Main()
         {
-            Console.Write(c);
-            Thread.Sleep(40);
-        }
+            Console.CursorVisible = false;
+            Title();
 
-        Thread.Sleep(2000);
+            string text = """
+                          Welcome to our Game, FlappyBat.
+                          The game was programmed by Metehan, David and Hamlet.
+                          It's a simple game, it's similar to FlappyBird, only with a bat.
+                          We hope you enjoy our game . . .
+                          """;
 
-        Console.Clear();
-
-        Title();
-
-        Options();
-    }
-    static void Title()
-    {
-        Console.WriteLine("███████╗██╗      █████╗ ██████╗ ██████╗ ██╗   ██╗██████╗  █████╗ ████████╗\r\n██╔════╝██║     ██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝██╔══██╗██╔══██╗╚══██╔══╝\r\n█████╗  ██║     ███████║██████╔╝██████╔╝ ╚████╔╝ ██████╔╝███████║   ██║   \r\n██╔══╝  ██║     ██╔══██║██╔═══╝ ██╔═══╝   ╚██╔╝  ██╔══██╗██╔══██║   ██║   \r\n██║     ███████╗██║  ██║██║     ██║        ██║   ██████╔╝██║  ██║   ██║   \r\n╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝        ╚═╝   ╚═════╝ ╚═╝  ╚═╝   ╚═╝   \r\n");
-    }
-
-    public static void Options()
-    {
-        Console.OutputEncoding = Encoding.UTF8;
-        bool pressedEnter = false;
-        string arrow = "\U0001F8A1";
-
-        string t = "Create a User;Start Game;Shop;End Game";
-        string[] parts = t.Split(';');
-
-        while (!pressedEnter)
-        {
-            Console.SetCursorPosition(0, 7);
-            for (int i = 0; i < parts.Length; i++)
+            foreach (char c in text)
             {
-                if (UpAndDown == i)
-                {
-                    Console.Write(arrow + " ");
-                    Console.BackgroundColor = ConsoleColor.Magenta;
-                    Console.WriteLine(parts[i]);
-                }
-                else
-                {
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.WriteLine("  " + parts[i]);
-                }
+                Console.Write(c);
+                Thread.Sleep(40);
             }
 
-            Keys(ref pressedEnter);
+            Thread.Sleep(2000);
+            Console.Clear();
+            Title();
+            Options();
         }
-        Console.BackgroundColor = ConsoleColor.Black;
-        Entered();
-    }
-    public static void Keys(ref bool e)
-    {
-        ConsoleKeyInfo key = Console.ReadKey();
 
-        if (key.Key == ConsoleKey.DownArrow)
+        public static void Title()
         {
-            UpAndDown++;
+            Console.WriteLine("███████╗██╗      █████╗ ██████╗ ██████╗ ██╗   ██╗██████╗  █████╗ ████████╗");
+            Console.WriteLine("██╔════╝██║     ██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝██╔══██╗██╔══██╗╚══██╔══╝");
+            Console.WriteLine("█████╗  ██║     ███████║██████╔╝██████╔╝ ╚████╔╝ ██████╔╝███████║   ██║   ");
+            Console.WriteLine("██╔══╝  ██║     ██╔══██║██╔═══╝ ██╔═══╝   ╚██╔╝  ██╔══██╗██╔══██║   ██║   ");
+            Console.WriteLine("██║     ███████╗██║  ██║██║     ██║        ██║   ██████╔╝██║  ██║   ██║   ");
+            Console.WriteLine("╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝        ╚═╝   ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ");
         }
-        else if (key.Key == ConsoleKey.UpArrow)
-        {
-            UpAndDown--;
-        }
-        else if(key.Key == ConsoleKey.Enter)
-        {
-            e = true;
-        }
-    }
-    public static void Entered()
-    {
-        Console.Clear();
 
-        switch(UpAndDown)
+        public static void Options()
         {
-            case 0:
-                Users.TheUsers();
-                Title();
-                Options();
-                break;
-            case 1:
-                FlappyBatWalls.Wall();
-                //points nach einem erfolgreichen jump um 1 erhöhen
+            Console.OutputEncoding = Encoding.UTF8;
+            bool pressedEnter = false;
+            string arrow = "\U0001F8A1";
 
-                Users.WriteAllInLines(Points);
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            default:
-                Console.Clear();
-                Console.WriteLine("Error . . .");
-                break;
+            string t = "Create a User;Start Game;Shop;End Game";
+            string[] parts = t.Split(';');
+
+            while (!pressedEnter)
+            {
+                Console.SetCursorPosition(0, 7);
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    if (UpAndDown == i)
+                    {
+                        Console.Write(arrow + " ");
+                        Console.BackgroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine(parts[i]);
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine("  " + parts[i]);
+                    }
+                }
+
+                Keys(ref pressedEnter);
+            }
+            Console.BackgroundColor = ConsoleColor.Black;
+            Entered();
+        }
+
+        public static void Keys(ref bool e)
+        {
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.Key == ConsoleKey.DownArrow)
+            {
+                UpAndDown++;
+            }
+            else if (key.Key == ConsoleKey.UpArrow)
+            {
+                UpAndDown--;
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            {
+                e = true;
+            }
+        }
+
+        public static void Entered()
+        {
+            Console.Clear();
+
+            switch (UpAndDown)
+            {
+                case 0:
+                    Users.TheUsers();
+                    Title();
+                    Options();
+                    break;
+                case 1:
+                    FlappyBatWalls.WallMain();
+                    Users.WriteAllInLines(Points);
+                    break;
+                case 2:
+                    // Shop functionality here
+                    break;
+                case 3:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Error . . .");
+                    break;
+            }
         }
     }
 }
